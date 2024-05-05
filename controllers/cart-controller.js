@@ -157,8 +157,6 @@ const decreaseQuantity = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
-    console.log(existingProduct);
-
     if (existingProduct.quantity === 1) {
       const updatedProducts = cart.products.filter(
         (product) => product.productId.toString() !== productId
