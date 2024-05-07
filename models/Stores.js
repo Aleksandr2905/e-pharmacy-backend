@@ -23,6 +23,10 @@ const storesSchema = new Schema(
       type: Number,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );
