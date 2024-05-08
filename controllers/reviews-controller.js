@@ -2,8 +2,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 import Reviews from "../models/Reviews.js";
 
 const getReviews = async (req, res) => {
-  const { limit = 3 | 2 | 1 } = req.body;
-  const result = await Reviews.find().limit(limit);
+  const result = await Reviews.find();
 
   res.json(result);
 };
