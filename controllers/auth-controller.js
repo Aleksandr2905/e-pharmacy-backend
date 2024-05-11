@@ -46,8 +46,7 @@ const signin = async (req, res) => {
 
   res.json({
     token,
-    username: user.username,
-    email: user.email,
+    user: { username: user.username, email: user.email },
   });
 };
 
