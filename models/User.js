@@ -52,6 +52,6 @@ export const userSigninSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const User = model("user", userSchema);
+const User = model("users", userSchema);
 
 export default User;
