@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import app from "./app.js";
 
-mongoose.set("strictQuery", false);
-
 const { DB_HOST, PORT } = process.env;
 
 mongoose
