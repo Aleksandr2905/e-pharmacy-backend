@@ -7,11 +7,11 @@ const phoneRegexp = /^\+380\d{2}\d{3}\d{2}\d{2}$/;
 
 const cartSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
+    // userId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "user",
+    //   required: true,
+    // },
     products: [
       {
         productId: {
