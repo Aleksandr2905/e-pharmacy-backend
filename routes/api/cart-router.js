@@ -29,7 +29,7 @@ cartRouter.post(
 
 cartRouter.patch(
   "/add",
-  authenticate,
+  // authenticate,
   validateBody(addToCartSchema),
   cartController.addToCart
 );
