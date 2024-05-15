@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import "dotenv/config";
+import "dotenv/config";
 import User from "../models/User.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
@@ -39,9 +39,11 @@ const signin = async (req, res) => {
 
   const { _id: id } = user;
 
-  const payload = { id };
+  const payload = {
+    id,
+  };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   await User.findByIdAndUpdate(id, { token });
 
   res.json({
