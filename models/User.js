@@ -30,6 +30,10 @@ const userSchema = new Schema(
     token: {
       type: String,
     },
+    cart: {
+      type: Schema.Types.ObjectId,
+      ref: "cart",
+    },
   },
   { versionKey: false, timestamps: true }
 );

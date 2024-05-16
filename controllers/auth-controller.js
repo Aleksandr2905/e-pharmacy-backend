@@ -52,10 +52,17 @@ const signin = async (req, res) => {
   });
 };
 
-const getUserInfo = (req, res) => {
+const getUserInfo = async (req, res) => {
   const { username, email } = req.user;
 
-  res.json({ username, email });
+  const user = await User.findOne({ email });
+
+  res.json({
+    user: {
+      name: user.name,
+      email,
+    },
+  });
 };
 
 const logout = async (req, res) => {
