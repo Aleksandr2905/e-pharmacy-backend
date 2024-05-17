@@ -41,6 +41,6 @@ productsSchema.pre("findOneAndUpdate", addUpdateSetting);
 
 productsSchema.post("findOneAndUpdate", handleSaveError);
 
-const Products = model("products", productsSchema);
+const Products = model("product", productsSchema);
 
 export default Products;
