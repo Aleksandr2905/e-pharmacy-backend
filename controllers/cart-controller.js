@@ -56,12 +56,23 @@ const updateCart = async (req, res) => {
   }
 
   const { products } = req.body;
-
   if (!products || !Array.isArray(products)) {
     throw HttpError(400, "Products array is required");
   }
 
   let cart = await Cart.findOne({ userId });
+  if (!cart) {
+    throw HttpError(404, "Cart not found");
+  }
+
+  if (products.length === 0) {
+    cart = await Cart.findOneAndUpdate(
+      { userId },
+      { products: [], total: "0.00" },
+      { new: true }
+    );
+    return res.status(200).json(cart);
+  }
 
   let total = 0;
   const updatedProducts = [];
