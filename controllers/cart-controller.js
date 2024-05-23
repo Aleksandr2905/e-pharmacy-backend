@@ -105,18 +105,18 @@ const updateCart = async (req, res) => {
 
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
-  const { name, email, phone, address, payment } = req.body;
+  const { username, email, phone, address, payment } = req.body;
 
   const result = await Cart.findOneAndUpdate(
     { userId },
-    { name, email, phone, address, payment, isOrdered: true },
+    { username, email, phone, address, payment, isOrdered: true },
     { new: true }
   );
 
   const emailData = {
     to: email,
     subject: "Order Confirmation",
-    html: `Hello, ${name}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
+    html: `Hello, ${username}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
   };
 
   await sendEmail(emailData);
