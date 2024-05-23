@@ -153,6 +153,7 @@ const cartCheckout = async (req, res) => {
       text: emailText,
     });
   } catch (error) {
+    console.error("Error sending email:", error);
     throw HttpError(500, "Failed to send order email");
   }
 
