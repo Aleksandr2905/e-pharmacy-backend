@@ -112,7 +112,7 @@ const cartCheckout = async (req, res) => {
     { new: true }
   ).populate("products.productId");
 
-  if (!cart) {
+  if (!result) {
     throw HttpError(404, "Cart not found");
   }
 
