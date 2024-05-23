@@ -1,5 +1,6 @@
 import { ctrlWrapper } from "../decorators/index.js";
 import HttpError from "../helpers/HttpError.js";
+import sendEmail from "../helpers/sendEmail.js";
 import Cart from "../models/Cart.js";
 import Products from "../models/Products.js";
 import User from "../models/User.js";
@@ -105,11 +106,21 @@ const updateCart = async (req, res) => {
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
   const { name, email, phone, address, payment } = req.body;
+
   const result = await Cart.findOneAndUpdate(
     { userId },
     { name, email, phone, address, payment, isOrdered: true },
     { new: true }
   );
+
+  const emailData = {
+    to: email,
+    subject: "Order Confirmation",
+    text: `Hello, ${name}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
+  };
+
+  await sendEmail(emailData);
+
   res.status(200).json(result);
 };
 
