@@ -116,7 +116,7 @@ const cartCheckout = async (req, res) => {
   const emailData = {
     to: email,
     subject: "Order Confirmation",
-    text: `Hello, ${name}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
+    html: `Hello, ${name}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
   };
 
   await sendEmail(emailData);
