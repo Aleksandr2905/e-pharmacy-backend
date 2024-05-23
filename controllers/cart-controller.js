@@ -106,6 +106,7 @@ const updateCart = async (req, res) => {
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
   const { name, email, phone, address, payment } = req.body;
+
   const result = await Cart.findOneAndUpdate(
     { userId },
     { name, email, phone, address, payment, isOrdered: true },
@@ -116,7 +117,6 @@ const cartCheckout = async (req, res) => {
     throw HttpError(404, "Cart not found");
   }
 
-  // Prepare the order details for the email
   const cartProducts = result.products.map((item) => ({
     name: item.productId.name,
     quantity: item.quantity,
@@ -146,11 +146,15 @@ const cartCheckout = async (req, res) => {
     Your Company
   `;
 
-  await sendEmail({
-    to: email,
-    subject: "Your Order Confirmation",
-    html: emailText,
-  });
+  try {
+    await sendEmail({
+      to: email,
+      subject: "Your Order Confirmation",
+      text: emailText,
+    });
+  } catch (error) {
+    throw HttpError(500, "Failed to send order email");
+  }
 
   res.status(200).json(result);
 };
