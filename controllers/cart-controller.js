@@ -1,5 +1,6 @@
 import { ctrlWrapper } from "../decorators/index.js";
 import HttpError from "../helpers/HttpError.js";
+import sendEmail from "../helpers/sendEmail.js";
 import Cart from "../models/Cart.js";
 import Products from "../models/Products.js";
 import User from "../models/User.js";
@@ -109,7 +110,48 @@ const cartCheckout = async (req, res) => {
     { userId },
     { name, email, phone, address, payment, isOrdered: true },
     { new: true }
-  );
+  ).populate("products.productId");
+
+  if (!cart) {
+    throw HttpError(404, "Cart not found");
+  }
+
+  // Prepare the order details for the email
+  const cartProducts = result.products.map((item) => ({
+    name: item.productId.name,
+    quantity: item.quantity,
+    price: item.productId.price,
+  }));
+
+  const total = result.total;
+  const orderDetails = cartProducts
+    .map(
+      (item) =>
+        `${item.name} - Quantity: ${item.quantity} - Price: $${item.price}`
+    )
+    .join("\n");
+
+  const emailText = `
+    Dear ${name},
+
+    Thank you for your order. Here are the details:
+
+    ${orderDetails}
+
+    Total: $${total}
+
+    We will contact you shortly to confirm your order.
+
+    Best regards,
+    Your Company
+  `;
+
+  await sendEmail({
+    to: email,
+    subject: "Your Order Confirmation",
+    html: emailText,
+  });
+
   res.status(200).json(result);
 };
 
