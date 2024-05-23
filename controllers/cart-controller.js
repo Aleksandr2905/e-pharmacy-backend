@@ -150,11 +150,11 @@ const cartCheckout = async (req, res) => {
     await sendEmail({
       to: email,
       subject: "Your Order Confirmation",
-      text: emailText,
+      html: emailText,
     });
   } catch (error) {
     console.error("Error sending email:", error);
-    throw HttpError(500, "Failed to send order email");
+    throw HttpError(500, `Failed to send order email: ${error.message}`);
   }
 
   res.status(200).json(result);
