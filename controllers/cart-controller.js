@@ -1,6 +1,5 @@
 import { ctrlWrapper } from "../decorators/index.js";
 import HttpError from "../helpers/HttpError.js";
-import sendEmail from "../helpers/sendEmail.js";
 import Cart from "../models/Cart.js";
 import Products from "../models/Products.js";
 import User from "../models/User.js";
@@ -106,57 +105,11 @@ const updateCart = async (req, res) => {
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
   const { name, email, phone, address, payment } = req.body;
-
   const result = await Cart.findOneAndUpdate(
     { userId },
     { name, email, phone, address, payment, isOrdered: true },
     { new: true }
-  ).populate("products.productId");
-
-  if (!result) {
-    throw HttpError(404, "Cart not found");
-  }
-
-  const cartProducts = result.products.map((item) => ({
-    name: item.productId.name,
-    quantity: item.quantity,
-    price: item.productId.price,
-  }));
-
-  const total = result.total;
-  const orderDetails = cartProducts
-    .map(
-      (item) =>
-        `${item.name} - Quantity: ${item.quantity} - Price: $${item.price}`
-    )
-    .join("\n");
-
-  const emailText = `
-    Dear ${name},
-
-    Thank you for your order. Here are the details:
-
-    ${orderDetails}
-
-    Total: $${total}
-
-    We will contact you shortly to confirm your order.
-
-    Best regards,
-    Your Company
-  `;
-
-  try {
-    await sendEmail({
-      to: email,
-      subject: "Your Order Confirmation",
-      html: emailText,
-    });
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw HttpError(500, `Failed to send order email: ${error.message}`);
-  }
-
+  );
   res.status(200).json(result);
 };
 
