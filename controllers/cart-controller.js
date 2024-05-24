@@ -103,23 +103,74 @@ const updateCart = async (req, res) => {
   res.status(200).json(cart);
 };
 
+// const cartCheckout = async (req, res) => {
+//   const { _id: userId } = req.user;
+//   const { username, email, phone, address, payment } = req.body;
+
+//   const result = await Cart.findOneAndUpdate(
+//     { userId },
+//     { username, email, phone, address, payment, isOrdered: true },
+//     { new: true }
+//   );
+
+//   const emailData = {
+//     to: email,
+//     subject: "Order Confirmation",
+//     html: `Hello, ${username}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
+//   };
+
+//   await sendEmail(emailData);
+
+//   res.status(200).json(result);
+// };
+
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
   const { username, email, phone, address, payment } = req.body;
-
   const result = await Cart.findOneAndUpdate(
     { userId },
     { username, email, phone, address, payment, isOrdered: true },
     { new: true }
-  );
+  ).populate("products.productId");
 
-  const emailData = {
+  if (!result) {
+    throw HttpError(404, "Cart not found");
+  }
+
+  const cartProducts = result.products.map((item) => ({
+    username: item.productId.username,
+    quantity: item.quantity,
+    price: item.productId.price,
+  }));
+
+  const total = result.total;
+  const orderDetails = cartProducts
+    .map(
+      (item) =>
+        `${item.username} - Quantity: ${item.quantity} - Price: $${item.price}`
+    )
+    .join("\n");
+
+  const emailText = `
+    Dear ${username},
+
+    Thank you for your order. Here are the details:
+
+    ${orderDetails}
+
+    Total: $${total}
+
+    We will contact you shortly to confirm your order.
+
+    Best regards,
+    Your Company
+  `;
+
+  await sendEmail({
     to: email,
-    subject: "Order Confirmation",
-    html: `Hello, ${username}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
-  };
-
-  await sendEmail(emailData);
+    subject: "Your Order Confirmation",
+    html: emailText,
+  });
 
   res.status(200).json(result);
 };
