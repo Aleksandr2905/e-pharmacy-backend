@@ -138,7 +138,7 @@ const cartCheckout = async (req, res) => {
   }
 
   const cartProducts = result.products.map((item) => ({
-    username: item.productId.username,
+    name: item.productId.name,
     quantity: item.quantity,
     price: item.productId.price,
   }));
@@ -147,7 +147,7 @@ const cartCheckout = async (req, res) => {
   const orderDetails = cartProducts
     .map(
       (item) =>
-        `${item.username} - Quantity: ${item.quantity} - Price: $${item.price}`
+        `${item.name} - Quantity: ${item.quantity} - Price: $${item.price}`
     )
     .join("\n");
 
