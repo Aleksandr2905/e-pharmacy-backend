@@ -22,9 +22,9 @@ const getAllProducts = async (req, res) => {
     limit,
   });
 
-  if (result.length === 0) {
-    throw HttpError(404, "Not found");
-  }
+  // if (result.length === 0) {
+  //   throw HttpError(404, "Not found");
+  // }
 
   res.json({
     currentPage: Number(page),
