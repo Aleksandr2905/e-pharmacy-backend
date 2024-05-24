@@ -103,27 +103,6 @@ const updateCart = async (req, res) => {
   res.status(200).json(cart);
 };
 
-// const cartCheckout = async (req, res) => {
-//   const { _id: userId } = req.user;
-//   const { username, email, phone, address, payment } = req.body;
-
-//   const result = await Cart.findOneAndUpdate(
-//     { userId },
-//     { username, email, phone, address, payment, isOrdered: true },
-//     { new: true }
-//   );
-
-//   const emailData = {
-//     to: email,
-//     subject: "Order Confirmation",
-//     html: `Hello, ${username}. Thank you for your order! Your order details are: Address: ${address}, Payment: ${payment}.`,
-//   };
-
-//   await sendEmail(emailData);
-
-//   res.status(200).json(result);
-// };
-
 const cartCheckout = async (req, res) => {
   const { _id: userId } = req.user;
   const { username, email, phone, address, payment } = req.body;
@@ -147,28 +126,37 @@ const cartCheckout = async (req, res) => {
   const orderDetails = cartProducts
     .map(
       (item) =>
-        `${item.name} - Quantity: ${item.quantity} - Price: $${item.price}`
+        `<tr>
+         <td>${item.name}</td>
+         <td>${item.quantity}</td>
+         <td>৳${item.price}</td>
+       </tr>`
     )
-    .join("\n");
+    .join("");
 
   const emailText = `
-    Dear ${username},
-
-    Thank you for your order. Here are the details:
-
-    ${orderDetails}
-
-    Total: $${total}
-
-    We will contact you shortly to confirm your order.
-
-    Best regards,
-    Your Company
+    <p>Dear, ${username},</p>
+    <p>Thank you for your order. Here are the details:</p>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${orderDetails}
+    </tbody>
+  </table>
+    <p>TOTAL: ৳${total}</p>
+    <p>We will contact you shortly to confirm your order.</p>
+    <p>Best regards,<br>E-Pharmacy</p>
   `;
 
   await sendEmail({
     to: email,
-    subject: "Your Order Confirmation",
+    subject: "Your order confirmation E-Pharmacy",
     html: emailText,
   });
 
